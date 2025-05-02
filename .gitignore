@@ -1,17 +1,27 @@
-# Ignore Visual Studio files
+# Fichiers Visual Studio
 .vs/
-*.vcxproj*
+*.vcxproj.*
+*.vcxproj
 *.sln
 *.user
-*.obj
-*.exe
-*.log
+*.suo
+
+# Dossiers de build
+build/
+out/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.ilk
 *.pdb
-*.idb
-*.ipch
+*.obj
+*.log
+*.ninja
+*.res
+*.rc
+*.manifest
 *.tlog
-*.opensdf
-*.sdf
-*.cache
-*.db
-*.VC.db
+*.idb
+
+# Générés par CMake
+CMakeSettings.json
