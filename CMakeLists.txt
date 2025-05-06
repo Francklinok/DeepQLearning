@@ -21,7 +21,7 @@ endif()
 add_executable(${PROJECT_NAME}
     DeepReinforcementLearning.cpp # Assurez-vous que votre fichier principal est dans src/
     # Ajoutez d'autres fichiers .cpp de votre projet si nécessaire
-)
+ "src/core/ExecutionContext/ExecutionContext.cpp")
 
 
 
