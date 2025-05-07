@@ -1,46 +1,61 @@
+
 #include <ExplorationMetrics.h>
 
-ExplorationMetrics::ExplorationMetrics()
-	:explorationEfficiency(static_cast<T>(0.5)),
-	exploitationEfficiency(static_cast<T>(0.5)),
-	entropyLevel(static_cast<T>(1.0)),
+template<typename T>
+ExplorationMetrics<T>::ExplorationMetrics()
+    : explorationEfficiency(static_cast<T>(0.5)),
+    exploitationEfficiency(static_cast<T>(0.5)),
+    entropyLevel(static_cast<T>(1.0)),
     learningProgress(static_cast<T>(0)),
-	noiseLevel(static_cast<T>(0)) {}
-
-T ExplorationMetrics::getExplorationEfficiency() const {
-	return explorationEfficiency; 
+    noiseLevel(static_cast<T>(0)) {
 }
 
-T ExplorationMetrics::getExploitationEfficiency() const {
-	return exploitationEfficiency; 
-}
-T ExplorationMetrics::getEntropyLevel() const {
-	return entropyLevel; 
-}
-T ExplorationMetrics::getLearningProgress() const {
-	return learningProgress;
+template<typename T>
+T ExplorationMetrics<T>::getExplorationEfficiency() const {
+    return explorationEfficiency;
 }
 
-T ExplorationMetrics::getNoiseLevel() const {
-	return noiseLevel;
+template<typename T>
+T ExplorationMetrics<T>::getExploitationEfficiency() const {
+    return exploitationEfficiency;
 }
 
-void ExplorationMetrics::setExplorationEfficiency(T value) { 
-	explorationEfficiency = value; 
-}
-void ExplorationMetrics::setExploitationEfficiency(T value) { 
-	exploitationEfficiency = value; 
-}
-void ExplorationMetrics::setEntropyLevel(T value) { 
-	entropyLevel = value;
+template<typename T>
+T ExplorationMetrics<T>::getEntropyLevel() const {
+    return entropyLevel;
 }
 
-void ExplorationMetrics::setLearningProgress(T value) {
-	learningProgress = value;
-}
-void ExplorationMetrics::setNoiseLevel(T value) {
-	noiseLevel = value; 
+template<typename T>
+T ExplorationMetrics<T>::getLearningProgress() const {
+    return learningProgress;
 }
 
+template<typename T>
+T ExplorationMetrics<T>::getNoiseLevel() const {
+    return noiseLevel;
+}
 
+template<typename T>
+void ExplorationMetrics<T>::setExplorationEfficiency(T value) {
+    explorationEfficiency = value;
+}
 
+template<typename T>
+void ExplorationMetrics<T>::setExploitationEfficiency(T value) {
+    exploitationEfficiency = value;
+}
+
+template<typename T>
+void ExplorationMetrics<T>::setEntropyLevel(T value) {
+    entropyLevel = value;
+}
+
+template<typename T>
+void ExplorationMetrics<T>::setLearningProgress(T value) {
+    learningProgress = value;
+}
+
+template<typename T>
+void ExplorationMetrics<T>::setNoiseLevel(T value) {
+    noiseLevel = value;
+}
