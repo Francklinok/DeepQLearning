@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <vector>
 #include "ExplorationStrategy.hpp"
 #include "EpsilonGreedy.hpp"
 #include "NoisyExploration.hpp"
@@ -28,7 +30,9 @@ public:
         T end = static_cast<T>(0.01),
         T decay = static_cast<T>(0.995),
         int64_t minSteps = 1000
-    );
+    ) {
+        return std::make_unique<EpsilonGreedy<T, HardwareTarget>>(start, end, decay, minSteps);
+    }
 
     /**
      * @brief Creates a noise-based exploration strategy
@@ -41,7 +45,9 @@ public:
         T scale = static_cast<T>(0.5),
         T decay = static_cast<T>(0.99),
         bool adaptiveNoise = true
-    );
+    ) {
+        return std::make_unique<NoisyExploration<T, HardwareTarget>>(scale, decay, adaptiveNoise);
+    }
 
     /**
      * @brief Creates an entropy-based exploration strategy
@@ -56,7 +62,10 @@ public:
         T minWeight = static_cast<T>(0.001),
         T decay = static_cast<T>(0.995),
         T adaptiveFactor = static_cast<T>(1.2)
-    );
+    ) {
+        return std::make_unique<EntropyBasedExploration<T, HardwareTarget>>(
+            weight, minWeight, decay, adaptiveFactor);
+    }
 
     /**
      * @brief Creates a Boltzmann exploration strategy
@@ -71,19 +80,42 @@ public:
         T minTemp = static_cast<T>(0.01),
         T coolingRate = static_cast<T>(0.99),
         bool adaptiveCooling = true
-    );
+    ) {
+        return std::make_unique<BoltzmannExploration<T, HardwareTarget>>(
+            initialTemp, minTemp, coolingRate, adaptiveCooling);
+    }
 
     /**
      * @brief Creates a balanced composite strategy with equal weighting
      * @return Pointer to a composite strategy instance
      */
-    static std::unique_ptr<ExplorationStrategy<T, HardwareTarget>> createBalancedComposite();
+    static std::unique_ptr<ExplorationStrategy<T, HardwareTarget>> createBalancedComposite() {
+        auto composite = std::make_unique<CompositeExploration<T, HardwareTarget>>();
+        composite->addStrategy(createEpsilonGreedy(), static_cast<T>(1.0));
+        composite->addStrategy(createBoltzmannExploration(), static_cast<T>(1.0));
+        composite->addStrategy(createNoisyExploration(), static_cast<T>(0.5));
+        return composite;
+    }
 
     /**
      * @brief Creates an adaptive composite strategy with dynamic weighting
      * @return Pointer to an adaptive composite strategy instance
      */
-    static std::unique_ptr<ExplorationStrategy<T, HardwareTarget>> createAdaptiveComposite();
-};
+    static std::unique_ptr<ExplorationStrategy<T, HardwareTarget>> createAdaptiveComposite() {
+        // Fonction de combinaison qui favorise les valeurs extrêmes
+        auto nonLinearCombinator = [](const std::vector<T>& rates) {
+            if (rates.empty()) return static_cast<T>(0);
+            T product = static_cast<T>(1.0);
+            for (T rate : rates) {
+                product *= (static_cast<T>(1.0) - rate);
+            }
+            return static_cast<T>(1.0) - product;
+            };
 
-#include "ExplorationFactory.inl"
+        auto composite = std::make_unique<CompositeExploration<T, HardwareTarget>>(nonLinearCombinator);
+        composite->addStrategy(createEpsilonGreedy(static_cast<T>(0.8), static_cast<T>(0.01), static_cast<T>(0.998), 2000), static_cast<T>(1.2));
+        composite->addStrategy(createBoltzmannExploration(static_cast<T>(0.5), static_cast<T>(0.01), static_cast<T>(0.997), true), static_cast<T>(1.0));
+        composite->addStrategy(createEntropyBasedExploration(), static_cast<T>(0.8));
+        return composite;
+    }
+};
