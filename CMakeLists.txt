@@ -2,12 +2,10 @@
 
 project(DeepReinforcementLearning LANGUAGES CXX)
 
-# Activer C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Rechargement à chaud pour MSVC
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
@@ -16,35 +14,22 @@ if (POLICY CMP0141)
       $<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-# Ajout de l'exécutable
-# Listez uniquement les fichiers sources (.cpp) ici
-add_executable(${PROJECT_NAME}
-    DeepReinforcementLearning.cpp # Assurez-vous que votre fichier principal est dans src/
-    # Ajoutez d'autres fichiers .cpp de votre projet si nécessaire
-  "includes/core/ExploratoryStrategy/egreedy/DefaultEntropyCalculator.h" "includes/core/CompositeExploration/CompositeExploration .h")
-
-
-
-# Inclure les répertoires de headers
-# Dites au compilateur où trouver vos fichiers d'en-tête (.h ou .hpp)
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/includes # Ajoute le répertoire 'includes'
-        ${CMAKE_CURRENT_SOURCE_DIR}/src      # Peut être utile si certains headers sont dans src
+# Ajouter tous les fichiers .cpp (et éventuellement .h pour IDE)
+file(GLOB_RECURSE SRC_FILES
+    src/*.cpp
+    includes/**/*.h
 )
 
-# TODO: Ajouter des modules ici (ex: core/, envs/, agents/)
-# Si vous avez des fichiers .cpp dans ces sous-répertoires, ajoutez-les à add_executable
-# ou utilisez add_subdirectory et liez les bibliothèques.
-# Exemple si vous avez un fichier src/core/some_file.cpp :
-# add_executable(${PROJECT_NAME}
-#     src/DeepReinforcementLearning.cpp
-#     src/core/some_file.cpp
-# )
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-# (Facultatif) Ajouter les tests
-# enable_testing()
-# add_subdirectory(tests)
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/includes
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 
-# (Facultatif) Installer le projet
-# install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+if (MSVC)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive-)
+else()
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()

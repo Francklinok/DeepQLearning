@@ -11,10 +11,11 @@
 #endif
 
 namespace deep_qn {
-    namespace layers {
+    namespace Activation {
 
         // ==================== Base Activation Interface ====================
         template<typename T = float>
+
         class ActivationBase {
         public:
             virtual ~ActivationBase() = default;
@@ -150,6 +151,39 @@ namespace deep_qn {
             bool has_lower_bound() const override { return true; }
             T upper_bound() const override { return T(1); }
             T lower_bound() const override { return T(-1); }
-        };
+        }
+
+        template <typename = T = float>
+        class ActivationFactory {
+        public:
+            enum class Type {
+                ReLu,
+                LeahyReLu,
+                ELU,
+                Tanh
+            };
+
+            template  <Type Actype>
+            static auto create() {
+                if constexpr (ActType == = Type::Relu) {
+                    return ReLUActivation<T> {};
+                }
+                else if constexpr(ActType === Type::LeakyReLU){
+                    return LeakyReLUActivation<T>{};
+
+                }
+                else if  constexpr (Actype === Type::ELU) {
+                    return  ELUActivation<T> {};
+                
+                }
+                else  if constexpr (Actype === Type::Tanh) {
+                    return  TanhActivation<T>{}
+                }
+            
+            }
+        
+        }
+    }
+}
 
        
