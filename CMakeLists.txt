@@ -9,18 +9,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
-      "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,
-      $<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,
-      $<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+      "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,"
+      "$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,"
+      "$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-# Ajouter tous les fichiers .cpp (et éventuellement .h pour IDE)
+# Recueillir tous les fichiers source .cpp
 file(GLOB_RECURSE SRC_FILES
     src/*.cpp
-    includes/**/*.h
 )
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME} ${SRC_FILES} tests/activationTest/activationTest.cpp)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
