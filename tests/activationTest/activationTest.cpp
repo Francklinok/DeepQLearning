@@ -1,29 +1,36 @@
-// ==================== Usage Examples and Utilities ====================
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <memory>      // std::unique_ptr
+#include <string>
+#include "activation.hpp"       // Contient toutes les classes d'activation et ActivationFactory
+#include "activation_layer.hpp" // Contient ActivationLayer (ton wrapper avec unique_ptr)
+#include "activation_concept.hpp"
+#include  "includes/core/agent/layers/activation/activation.hpp"
+
 namespace Examples {
 
-    // Example: Simple usage
+    // Exemple simple d'utilisation
     template<typename T = float>
     void basic_usage_example() {
-        // Create activation functions
-        auto relu = Activation::ActivationFactory<T>::template create<Activation::ActivationFactory<T>::Type::ReLU>();
-        auto leaky_relu = Activation::ActivationFactory<T>::template create<Activation::ActivationFactory<T>::Type::LeakyReLU>(T(0.01));
+        // Créer les fonctions d'activation
+        auto relu = std::make_unique<Activation::ReLUActivation<T>>();
+        auto leaky_relu = std::make_unique<Activation::LeakyReLUActivation<T>>(T(0.01));
 
-        // Test single values
         T x = T(-0.5);
         std::cout << "ReLU(" << x << ") = " << relu->activate(x) << std::endl;
         std::cout << "LeakyReLU(" << x << ") = " << leaky_relu->activate(x) << std::endl;
     }
 
-    // Example: Batch processing
+    // Exemple de traitement par batch
     template<typename T = float>
     void batch_processing_example() {
-        auto gelu = Activation::ActivationFactory<T>::template create<Activation::ActivationFactory<T>::Type::GELU>();
+        auto gelu = std::make_unique<Activation::GELUActivation<T>>();
 
-        // Prepare data
         std::vector<T> input = { -2.0, -1.0, 0.0, 1.0, 2.0 };
         std::vector<T> output(input.size());
 
-        // Process batch
         gelu->activate_batch(input.data(), output.data(), input.size());
 
         std::cout << "GELU batch results: ";
@@ -33,20 +40,17 @@ namespace Examples {
         std::cout << std::endl;
     }
 
-    // Example: Layer usage
+    // Exemple d'utilisation avec ActivationLayer (wrapper)
     template<typename T = float>
     void layer_usage_example() {
-        // Create activation layer
-        auto swish_func = Activation::ActivationFactory<T>::template create<Activation::ActivationFactory<T>::Type::Swish>(T(1.0));
+        auto swish_func = std::make_unique<Activation::SwishActivation<T>>(T(1.0));
         Activation::ActivationLayer<T> layer(std::move(swish_func));
 
-        // Forward pass
         std::vector<T> input = { -1.0, -0.5, 0.0, 0.5, 1.0 };
         std::vector<T> output;
         layer.forward(input, output);
 
-        // Backward pass
-        std::vector<T> grad_output(output.size(), T(1.0)); // Assume gradient of 1
+        std::vector<T> grad_output(output.size(), T(1.0)); // Gradient arbitraire
         std::vector<T> grad_input;
         layer.backward(input, grad_output, grad_input);
 
@@ -58,4 +62,4 @@ namespace Examples {
         std::cout << std::endl;
     }
 
-    // Example
+} // namespace Examples

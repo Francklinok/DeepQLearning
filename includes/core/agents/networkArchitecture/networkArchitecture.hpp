@@ -12,7 +12,7 @@ public:
         tensorflow::Input input,
         int inputSize,
         int outputSize
-    ) = 0; // <- si tu veux une interface pure
+    ) = 0; // interface pure
 
     bool noisy = false;
 };

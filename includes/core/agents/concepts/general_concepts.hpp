@@ -11,14 +11,18 @@ namespace deep_qn {
     namespace core {
 
         // ==================== Basic Type Concepts ====================
-        template<typename T>
-        concept Numeric = std::is_arithmetic_v<T>;
-
-        template<typename T>
-        concept FloatingPoint = std::is_floating_point_v<T>;
+        template <typename T>
+        concept Numeric = std::is_arithmetic_v<T> && !std::is_same_v<T, bool>;
 
         template<typename T>
         concept Integral = std::is_integral_v<T>;
+
+        template<typename T>
+        concept FloatingPoint = std::is_floating_point<T>;
+
+        template<typename T>
+        concept  SiMDCompatible = FloatingPoint<T> && (sizeof(T) == 4 || size)
+
 
         // ==================== Neural Network Concepts ====================
 #ifdef TENSORFLOW_ENABLED
