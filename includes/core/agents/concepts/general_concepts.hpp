@@ -7,8 +7,7 @@
 #include <tensorflow/cc/framework/scope.h>
 #endif
 
-namespace deep_qn {
-    namespace core {
+namespace General::Concept {
 
         // ==================== Basic Type Concepts ====================
         template <typename T>
@@ -91,5 +90,4 @@ namespace deep_qn {
             { f.create(args...) } -> std::same_as<Product>;
         };
 
-    } // namespace core
-} // namespace deep_qn
+} 

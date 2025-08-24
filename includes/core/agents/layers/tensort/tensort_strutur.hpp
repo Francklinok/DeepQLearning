@@ -15,14 +15,14 @@
 #include <thread>
 #include <utility>
 #include <type_traits>
-#include <execution>   // pour std::transform_reduce
+#include <execution>   
 #include <immintrin.h> // SIMD intrinsics
 
 #include "tensort_concept.hpp"
 #include "general_concepts.hpp"
 
 // namespace pour Tensor
-namespace Tensor {
+namespace Layer::Tensor {
 
     template<FloatingPoint T, size_t MaxDims = 4>
     class Tensor {
@@ -390,4 +390,4 @@ namespace Tensor {
         auto cend() const { return tensors_.cend(); }
     };
 
-} // namespace Tensor
+}
